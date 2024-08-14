@@ -7,7 +7,7 @@ export class Block extends Realm.Object<Block> {
 
   static schema: ObjectSchema = {
     name: "Block",
-    primaryKey: "_id",
+    embedded: true,
     properties: {
       _id: "objectId",
       name: "string",
