@@ -6,12 +6,13 @@ import {
 } from "react-native";
 import { Block } from "@/models/Block";
 import { useRealm } from "@realm/react";
+import { List } from "realm";
 
-export function BlockList({ data } : any) {
+export function BlockList({ data } : { data : List<Block> | undefined }) {
 
 	const realm = useRealm();
 
-  const renderItem = ({ item } : any) => {
+  const renderItem = ({ item } : { item : Block}) => {
 		return (
 			<View
 				style={{
@@ -31,6 +32,8 @@ export function BlockList({ data } : any) {
 							shadowOpacity: 0.5,
 						}}>
 						<Text>{item.name}</Text>
+						<Text>Top Depth: {item.topDepth}</Text>
+						<Text>Bottom Depth: {item.bottomDepth}</Text>
 						<TouchableOpacity 
 							onPress={() => {
 								realm.write(() => {

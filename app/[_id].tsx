@@ -46,8 +46,8 @@ export default function Details() {
   const realm = useRealm();
 
   function renderSptModal() {
-    const [topDepth, setTopDepth] = React.useState("");
-    const [bottomDepth, setBottomDepth] = React.useState("");
+    const [topDepth, setTopDepth] = React.useState(-1);
+    const [bottomDepth, setBottomDepth] = React.useState(-1);
     const [disturbedSampleNumber, setDisturbedSampleNumber] = React.useState("");
     const [penetrationTestNumber, setPenetrationTestNumber] = React.useState("");
     const [a, setA] = React.useState(-1);
@@ -80,7 +80,7 @@ export default function Details() {
     const [soilType, setSoilType] = React.useState("");
     const [soilPropertyPreposition, setSoilPropertyPreposition] = React.useState("-");
     const [soilAdditionalProperties, setSoilAdditionalProperties] = React.useState("");
-    const [recovery, setRecovery] = React.useState(-1);
+    const [sampleRecover, setSampleRecover] = React.useState(-1);
 
     return (
       <Modal visible={openSptModal} transparent={true}>
@@ -134,8 +134,17 @@ export default function Details() {
                         borderWidth: 1,
                       }}
                       keyboardType="numeric"
-                      onChangeText={setTopDepth}
-                      value={topDepth}
+                      onChangeText={ (input) => {
+                        if (input) {
+                          if (!isNaN(Number(input))) {
+                            const inputVal = Number(input);
+                            setTopDepth(inputVal);
+                          }
+                        } else {
+                          setTopDepth(-1);
+                        }
+                      }}
+                      value={(topDepth < 0) ? "" : topDepth.toString()}
                     />
                   </View>
 
@@ -151,8 +160,17 @@ export default function Details() {
                         backgroundColor: "rgba(0, 0, 0, 0.1)",
                       }}
                       keyboardType="numeric"
-                      onChangeText={setBottomDepth}
-                      value={bottomDepth}
+                      onChangeText={(input) => {
+                        if (input) {
+                          if (!isNaN(Number(input))) {
+                            const inputVal = Number(input);
+                            setTopDepth(inputVal);
+                          }
+                        } else {
+                          setTopDepth(-1);
+                        }
+                      }}
+                      value={(bottomDepth < 0) ? "" : bottomDepth.toString()}
                       placeholder="Auto"
                       placeholderTextColor={"rgba(0, 0, 0, 0.2)"}
                     />
@@ -1155,17 +1173,17 @@ export default function Details() {
                             if (Number.isInteger(Number(input))) {
                               const inputVal = parseInt(input);
                               if (inputVal <= 450) {
-                                setRecovery(inputVal);
+                                setSampleRecover(inputVal);
                               } else {
                                 alert("Sample Recover should not exceed 450mm");
                               }
                             }
                           }
                         } else {
-                          setRecovery(-1);
+                          setSampleRecover(-1);
                         }
                       }}
-                      value={(recovery) < 0 ? "" : recovery.toString()}
+                      value={(sampleRecover) < 0 ? "" : sampleRecover.toString()}
                     />
                   </View>
                   <View style={{height: 20}}/>
@@ -1178,6 +1196,8 @@ export default function Details() {
                     const newBlock : Block = {
                       _id: new BSON.ObjectId(),
                       name: "SPT Block",
+                      topDepth: topDepth.toString(),
+                      bottomDepth: (topDepth + sampleRecover).toString(),
                     } as Block;
                     project?.blocks.push(newBlock);
                   });
